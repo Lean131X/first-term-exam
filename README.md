@@ -93,6 +93,7 @@ File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 ```bash
 # brute.sh
 ```
+```bash
 #!/usr/bin/env bash
 API="http://127.0.0.1:8000/login"
 USER="leo"   # cambia a 'demo' o 'admin' si quieres
@@ -120,7 +121,7 @@ done
 end=$(date +%s)
 echo "NOT found after $attempts attempts in $((end-start))s"
 exit 1
-
+```
 
 > Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
