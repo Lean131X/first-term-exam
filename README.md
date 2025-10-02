@@ -28,7 +28,7 @@ py -m uvicorn main:app --reload
 ```
 
 - Swagger UI: http://127.0.0.1:8000/docs  
-- ReDoc:       http://127.0.0.1:8000/redoc
+
 
 > **Note:** The “database” is **in-memory**. If the server reloads (e.g., due to `--reload`), users are cleared and must be created again.
 
