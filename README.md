@@ -161,7 +161,7 @@ first-term-exam/
 └─ README.md
 ```
 
-### (Optional) .gitignore
+### .gitignore
 ```gitignore
 .venv/
 __pycache__/
