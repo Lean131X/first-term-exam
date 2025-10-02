@@ -151,14 +151,6 @@ exit 1
 
 ---
 
-## Mitigations (mention in your write-up)
-- **Rate limiting** per IP/username
-- **Backoff** after failed attempts (growing delays)
-- **Strong password policy** (length/entropy)
-- **Password hashing** (e.g., `bcrypt`) instead of plain text
-- **CAPTCHA / MFA** to slow down automation
-
----
 
 ## Project structure
 ```
