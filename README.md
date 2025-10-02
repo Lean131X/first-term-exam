@@ -52,10 +52,12 @@ py -m uvicorn main:app --reload
 }
 ```
 
-**2) GET /users**  
-**3) GET /users/id**
+**2) GET /users** 
+    List all users.
+**3) GET /users/{id} (e.g., {id} = 1)**
+    Get a single user by id.
 
-**4) PUT /users/id**
+**4) PUT /users/{id} (e.g., {id} = 1)**
 ```json
 {
   "email": "new@mail.com",
@@ -77,6 +79,9 @@ on `PUT /users/1` → should respond `username ya existe`.
   "password": "pass123"
 }
 ```
+
+If your FastAPI path is defined with `user_id` (as in `/users/{user_id}`), feel free to replace `{id}` with `{user_id}` in the text so it matches your code exactly.
+
 
 ---
 
