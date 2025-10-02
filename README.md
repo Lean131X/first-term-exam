@@ -139,7 +139,7 @@ end=$(date +%s)
 echo "NOT found after $attempts attempts in $((end-start))s"
 exit 1
 
-
+```
 > Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
 ### What to report (example)
