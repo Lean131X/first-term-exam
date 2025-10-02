@@ -53,9 +53,9 @@ py -m uvicorn main:app --reload
 ```
 
 **2) GET /users**  
-**3) GET /users/1**
+**3) GET /users/id**
 
-**4) PUT /users/1**
+**4) PUT /users/id**
 ```json
 {
   "email": "new@mail.com",
