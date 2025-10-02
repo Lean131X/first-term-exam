@@ -115,7 +115,7 @@ You can safely tweak:
 API="http://127.0.0.1:8000/login"
 USER="leo"   # change to 'demo' or 'admin' if you want
 
-WORDLIST=(pass123 123456 admin admin123 demo secret qwerty password adios)
+WORDLIST=(pass123 123456 admin admin123 demo secret qwerty password adios) #Add here the weak passwords
 
 attempts=0
 start=$(date +%s)
