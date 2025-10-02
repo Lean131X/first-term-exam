@@ -9,6 +9,9 @@
 - (Windows) Git Bash or WSL to run `brute.sh`
 
 ## Setup
+### It is recommended to create a virtual environment:
+
+Windows (PowerShell)
 
 ```bash
 # In the project folder
