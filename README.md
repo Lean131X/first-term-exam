@@ -53,9 +53,9 @@ py -m uvicorn main:app --reload
 ```
 
 **2) GET /users** 
-    List all users.
+    
 **3) GET /users/{id} (e.g., {id} = 1)**
-    Get a single user by id.
+
 
 **4) PUT /users/{id} (e.g., {id} = 1)**
 ```json
