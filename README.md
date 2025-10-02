@@ -156,7 +156,22 @@ exit 1
 
 ---
 
+### Sample run (console output)
 
+```bash
+$ ./brute.sh
+[1] Probando 'pass123' -> {"message":"Invalid credentials"}
+[2] Probando '123456'  -> {"message":"Invalid credentials"}
+[3] Probando 'admin'   -> {"message":"Invalid credentials"}
+[4] Probando 'admin123'-> {"message":"Invalid credentials"}
+[5] Probando 'demo'    -> {"message":"Invalid credentials"}
+[6] Probando 'secret'  -> {"message":"Invalid credentials"}
+[7] Probando 'qwerty'  -> {"message":"Invalid credentials"}
+[8] Probando 'password'-> {"message":"Invalid credentials"}
+[9] Probando 'adios'   -> {"message":"login successful"}
+ENCONTRADA: password='adios' en 9 intentos, 2s
+```
+---
 ## Project structure
 ```
 first-term-exam/
