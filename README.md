@@ -85,7 +85,6 @@ on `PUT /users/1` → should respond `username ya existe`.
 File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 
 ```bash
-chmod +x brute.sh
 ./brute.sh
 ```
 
