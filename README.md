@@ -1,84 +1,101 @@
-Users CRUD + Controlled Brute-Force (FastAPI)
+<!-- START README -->
 
-Educational use only. All tests must be run only against this local API and with practice accounts created for the exercise.
+# Users CRUD + Controlled Brute-Force (FastAPI)
 
-Requirements
+> **Educational use only.** All tests must be run **only** against this **local** API and with **practice accounts** created for the exercise.
 
-Python 3.10+
+## Requirements
+- Python 3.10+
+- (Windows) Git Bash or WSL to run `brute.sh`
 
-(Windows) Git Bash or WSL to run brute.sh
+## Setup
 
-Setup
+```bash
 # In the project folder
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 py -m pip install --upgrade pip
 py -m pip install -r requirements.txt
+```
 
-Run the API
+## Run the API
+
+```bash
 py -m uvicorn main:app --reload
+```
 
+- Swagger UI: http://127.0.0.1:8000/docs  
+- ReDoc:       http://127.0.0.1:8000/redoc
 
-Swagger UI: http://127.0.0.1:8000/docs
+> **Note:** The “database” is **in-memory**. If the server reloads (e.g., due to `--reload`), users are cleared and must be created again.
 
-ReDoc: http://127.0.0.1:8000/redoc
+---
 
-Note: The “database” is in-memory. If the server reloads (e.g., due to --reload), users are cleared and must be created again.
+## Endpoints
 
-Endpoints
+- `POST /users` — create user (receives **plain-text password**)
+- `GET /users` — list users (passwords not returned)
+- `GET /users/{id}` — get user by id
+- `PUT /users/{id}` — update (everything **except** password)
+- `DELETE /users/{id}` — delete
+- `POST /login` — authenticate (returns only `login successful` or `Invalid credentials`)
 
-POST /users — create user (receives plain-text password)
+### Quick CRUD test (in `/docs`)
 
-GET /users — list users (passwords not returned)
+**1) POST /users**
+```json
+{
+  "username": "demo",
+  "password": "pass123",
+  "email": "demo@mail.com",
+  "is_active": true
+}
+```
 
-GET /users/{id} — get user by id
+**2) GET /users**  
+**3) GET /users/1**
 
-PUT /users/{id} — update (everything except password)
+**4) PUT /users/1**
+```json
+{
+  "email": "new@mail.com",
+  "is_active": false
+}
+```
 
-DELETE /users/{id} — delete
-
-POST /login — authenticate (returns only login successful or Invalid credentials)
-
-Quick CRUD test (in /docs)
-
-POST /users
-
-{ "username": "demo", "password": "pass123", "email": "demo@mail.com", "is_active": true }
-
-
-GET /users
-
-GET /users/1
-
-PUT /users/1
-
-{ "email": "new@mail.com", "is_active": false }
-
-
-(Conflict test) Also create admin, then try:
-
+**5) Username conflict demo**  
+Create user `admin`, then:
+```json
 { "username": "admin" }
+```
+on `PUT /users/1` → should respond `username ya existe`.
 
+**6) POST /login**
+```json
+{
+  "username": "demo",
+  "password": "pass123"
+}
+```
 
-on PUT /users/1 → should respond username ya existe (username already exists).
+---
 
-POST /login
+## Controlled brute-force (bash)
 
-{ "username": "demo", "password": "pass123" }
+File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 
-Controlled brute-force (bash)
-
-File: brute.sh (included). Run in Git Bash while the API is running:
-
+```bash
 chmod +x brute.sh
 ./brute.sh
+```
 
-
-By default it attacks USER="demo" using a short internal wordlist.
+By default it targets `USER="demo"` using a short internal wordlist.  
 You can switch the user or read from a file:
 
-Create wordlist.txt:
+### Using a `wordlist.txt`
 
+**1) Create a simple wordlist**
+```bash
 cat > wordlist.txt <<'EOF'
 123456
 123456789
@@ -93,55 +110,71 @@ hola123
 secret
 pass123
 EOF
+```
 
-
-(Optional) Adjust brute.sh to read wordlist.txt:
+**2) (Optional) Adjust `brute.sh` to read the file**  
+Replace the loop with:
+```bash
+attempts=0
+start=$(date +%s)
 
 while IFS= read -r pwd; do
-  # ... POST with curl ...
+  attempts=$((attempts+1))
+  resp=$(curl -s -X POST "$API" \
+    -H "accept: application/json" \
+    -H "Content-Type: application/json" \
+    -d "{\"username\":\"$USER\",\"password\":\"$pwd\"}")
+  echo "[$attempts] '$pwd' -> $resp"
+  if [[ "$resp" == *"login successful"* ]]; then
+    end=$(date +%s)
+    echo "FOUND: '$pwd' in $attempts attempts, $((end-start))s"
+    exit 0
+  fi
+  sleep 0.2
 done < wordlist.txt
 
+end=$(date +%s)
+echo "NOT found after $attempts attempts in $((end-start))s"
+exit 1
+```
 
-Keep a small delay (e.g., sleep 0.2) to make it controlled and avoid overwhelming the local API.
+> Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
-What to report (example)
+### What to report (example)
+- Target user: `admin`  
+- Wordlist size: 12  
+- Delay between attempts: 0.2 s  
+- **Result**: found `secret` in 6 attempts, ~2 s  
+- Conclusion: weak/common passwords are cracked very quickly.
 
-Target user: admin
+---
 
-Wordlist size: 12
+## Mitigations (mention in your write-up)
+- **Rate limiting** per IP/username
+- **Backoff** after failed attempts (growing delays)
+- **Strong password policy** (length/entropy)
+- **Password hashing** (e.g., `bcrypt`) instead of plain text
+- **CAPTCHA / MFA** to slow down automation
 
-Delay between attempts: 0.2 s
+---
 
-Result: found secret in 6 attempts, ~2 s
-
-Conclusion: weak/common passwords are cracked very quickly.
-
-Mitigations (mention in your write-up)
-
-Rate limiting per IP/username
-
-Backoff after failed attempts (growing delays)
-
-Strong password policy (length/entropy)
-
-Password hashing (e.g., bcrypt) instead of plain text
-
-CAPTCHA / MFA to slow automation
-
-Project structure
+## Project structure
+```
 first-term-exam/
 ├─ main.py           # FastAPI (CRUD + login), in-memory "DB"
 ├─ brute.sh          # Bash brute-force script (controlled, uses curl)
 ├─ requirements.txt  # Dependencies
 └─ README.md
+```
 
-(Optional) .gitignore
-
-If you want one, add a .gitignore with:
-
+### (Optional) .gitignore
+```gitignore
 .venv/
 __pycache__/
 *.pyc
 *.log
 .DS_Store
 Thumbs.db
+```
+
+<!-- END README -->
