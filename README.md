@@ -88,11 +88,6 @@ File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 ./brute.sh
 ```
 
-### Run brute-force (inline wordlist)
-
-```bash
-# brute.sh
-```
 ```bash
 #!/usr/bin/env bash
 API="http://127.0.0.1:8000/login"
