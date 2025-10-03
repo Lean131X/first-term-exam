@@ -18,7 +18,7 @@ class UserCreate(SQLModel):
     email: Optional[str] = None
     is_active: bool = True
 
-# Update everything unless passwordg
+# Update everything unless password
 class UserUpdate(SQLModel):
     username: Optional[str] = None
     email: Optional[str] = None
