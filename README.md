@@ -122,8 +122,8 @@ You can safely tweak:
 # - MAXLEN: the maximum password length to try (1–3).
 
 #!/usr/bin/env bash
+
 API="http://127.0.0.1:8000/login"
-USER="leo"   # change to 'demo' or 'admin' if you want
 
 # Character set (letters + digits)
 CHARS=(a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9)
@@ -131,6 +131,8 @@ MAXLEN=3
 DELAY=0
 PAUSE_EVERY=400
 PAUSE_TIME=0.15
+
+USER="$1"        # USER will be taken from the first argument passed to the script
 
 attempts=0
 start=$(date +%s)
@@ -152,7 +154,7 @@ attempt() {
     exit 0
   fi
 
-  # Pausa cada N intentos (controlado pero rápido)
+  
   if (( attempts % PAUSE_EVERY == 0 )); then
     sleep "$PAUSE_TIME"
   fi
@@ -187,6 +189,7 @@ fi
 
 echo "NOT found (up to length $MAXLEN). Attempts: $attempts"
 exit 1
+
 ```
 
 ### What to report (example)
