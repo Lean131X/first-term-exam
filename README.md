@@ -222,7 +222,7 @@ To run the brute-force script for a specific user (e.g., demo), use the followin
 ```bash
 ./brute.sh demo
 ```
-What does $1 do?
+**What does $1 do?**
 In the script, USER="$1" means the script will take the first argument you pass when running it.
 
 If you run ./brute.sh demo, the script will use demo as the username and will attempt to brute force the password for that user.
@@ -237,21 +237,33 @@ For example:
 ```
 ---
 
-### Sample run (console output)
+### Example of Script Execution:
+
+Here’s an example of running the brute-force script:
 
 ```bash
-$ ./brute.sh
-[1] Probando 'pass123' -> {"message":"Invalid credentials"}
-[2] Probando '123456'  -> {"message":"Invalid credentials"}
-[3] Probando 'admin'   -> {"message":"Invalid credentials"}
-[4] Probando 'admin123'-> {"message":"Invalid credentials"}
-[5] Probando 'demo'    -> {"message":"Invalid credentials"}
-[6] Probando 'secret'  -> {"message":"Invalid credentials"}
-[7] Probando 'qwerty'  -> {"message":"Invalid credentials"}
-[8] Probando 'password'-> {"message":"Invalid credentials"}
-[9] Probando 'adios'   -> {"message":"login successful"}
-ENCONTRADA: password='adios' en 9 intentos, 2s
-```
+leand@PC-Leo MINGW64 ~/Documents/first-term-exam (main)
+$ ./brute.sh leo
+[*] Brute-force on 'leo' | chars=a b c 1 2 3 | maxlen=3
+[1] 'a' -> {"message":"Invalid credentials"}
+[2] 'b' -> {"message":"Invalid credentials"}
+[3] 'c' -> {"message":"Invalid credentials"}
+[4] '1' -> {"message":"Invalid credentials"}
+[5] '2' -> {"message":"Invalid credentials"}
+[6] '3' -> {"message":"Invalid credentials"}
+[7] 'aa' -> {"message":"Invalid credentials"}
+[8] 'ab' -> {"message":"Invalid credentials"}
+[9] 'ac' -> {"message":"Invalid credentials"}
+[10] 'a1' -> {"message":"Invalid credentials"}
+[11] 'a2' -> {"message":"Invalid credentials"}
+[12] 'a3' -> {"message":"Invalid credentials"}
+[13] 'ba' -> {"message":"Invalid credentials"}
+[14] 'bb' -> {"message":"Invalid credentials"}
+[15] 'bc' -> {"message":"Invalid credentials"}
+[16] 'b1' -> {"message":"Invalid credentials"}
+[17] 'b2' -> {"message":"login successful"}
+FOUND: password='b2' in 17 attempts, 3s
+
 ---
 ## Project structure
 ```
