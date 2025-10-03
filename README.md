@@ -211,7 +211,7 @@ cd path/to/your/project
 Run the following command to make the script executable:
 
 ```bash
-chmod +x brute.sh
+$ ./brute.sh "name of the user created in the crud"
 ```
 4. **Run the script:**
 
