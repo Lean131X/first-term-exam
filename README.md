@@ -192,13 +192,49 @@ exit 1
 
 ```
 
-### What to report (example)
-- Target user: `admin`  
-- Wordlist size: 12  
-- Delay between attempts: 0.2 s  
-- **Result**: found `secret` in 6 attempts, ~2 s  
-- Conclusion: weak/common passwords are cracked very quickly.
+### How to run the brute-force script:
 
+1. **Start your API:**
+
+   Make sure your API is running with FastAPI:
+   ```bash
+   py -m uvicorn main:app --reload
+2. **Go to Git Bash and navigate to the project folder:**
+
+Open Git Bash and change to the project folder where brute.sh is located:
+
+```bash
+cd path/to/your/project
+```
+3. **Give execute permission to brute.sh:**
+
+Run the following command to make the script executable:
+
+```bash
+chmod +x brute.sh
+```
+4. **Run the script:**
+
+The script uses the first argument passed to it as the username to attempt the login.
+
+To run the brute-force script for a specific user (e.g., demo), use the following command:
+
+```bash
+./brute.sh demo
+```
+What does $1 do?
+In the script, USER="$1" means the script will take the first argument you pass when running it.
+
+If you run ./brute.sh demo, the script will use demo as the username and will attempt to brute force the password for that user.
+
+This makes it easy to test multiple users without modifying the script.
+
+For example:
+
+```bash
+./brute.sh admin   # will test the 'admin' username.
+./brute.sh leo     # will test the 'leo' username.
+```
 ---
 
 ### Sample run (console output)
