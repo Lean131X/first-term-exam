@@ -263,7 +263,7 @@ $ ./brute.sh leo
 [16] 'b1' -> {"message":"Invalid credentials"}
 [17] 'b2' -> {"message":"login successful"}
 FOUND: password='b2' in 17 attempts, 3s
-
+```
 ---
 ## Project structure
 ```
@@ -272,16 +272,6 @@ first-term-exam/
 ├─ brute.sh          # Bash brute-force script (controlled, uses curl)
 ├─ requirements.txt  # Dependencies
 └─ README.md
-```
-
-### .gitignore
-```gitignore
-.venv/
-__pycache__/
-*.pyc
-*.log
-.DS_Store
-Thumbs.db
 ```
 
 <!-- END README -->
